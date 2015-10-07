@@ -1,0 +1,34 @@
+{
+  "name": "vanvan",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boxme/VanVan.git"
+  },
+  "author": "Desmond Ng (desmond.ng.yang.yi@gmail.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/boxme/VanVan/issues"
+  },
+  "homepage": "https://github.com/boxme/VanVan#readme",
+  "dependencies": {
+    "async": "^1.4.2",
+    "bcrypt": "^0.8.5",
+    "bluebird": "^2.10.2",
+    "body-parser": "^1.14.1",
+    "bookshelf": "^0.8.2",
+    "errorhandler": "^1.4.2",
+    "express": "^4.13.3",
+    "knex": "^0.8.6",
+    "lodash": "^3.10.1",
+    "mongoose": "^4.1.10",
+    "multer": "^1.0.6",
+    "pg": "^4.4.2",
+    "request": "^2.64.0"
+  }
+}

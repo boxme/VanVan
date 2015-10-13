@@ -12,6 +12,11 @@ var knex = require('knex')({
 	}
 });
 
-var bookShelf = require('bookshelf')(knex);
-bookShelf.plugin('visibility');
+var bookshelf = require('bookshelf')(knex);
+bookshelf.plugin('visibility');
 
+var user = bookshelf.Model.extend({
+	tableName: 'users'
+});
+
+exports.bookshelf = bookshelf;

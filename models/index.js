@@ -18,5 +18,6 @@ bookshelf.plugin('visibility');
 var user = bookshelf.Model.extend({
 	tableName: 'users'
 });
+exports.user = user;
 
 exports.bookshelf = bookshelf;

@@ -9,9 +9,9 @@ var multer = require('multer');
 
 var db = require('./database.js');
 
-app.use(multer());
+// app.use(multer());
 app.use(bodyParser.json());
-app.user(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({extended: true}));
 
 // database initialisation
 db.initialisation();

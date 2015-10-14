@@ -7,7 +7,7 @@ var promise = require('bluebird');
 var model = require('./models/index.js');
 var schema = require('./data/schema.js');
 
-var createTable = function() {
+var createTable = function(tableName) {
 	return model
 			.bookshelf
 			.knex
@@ -62,8 +62,8 @@ var doesTableExist = function(tableName) {
 };
 
 var setupTable = function(tableName) {
-	return function Callback(callback) {
 
+	return function Callback(callback) {
 		doesTableExist(tableName)
 			.then(function tableExists(exists) {
 
@@ -76,20 +76,22 @@ var setupTable = function(tableName) {
 							console.log("---> Created database table " + tableName);
 							callback(null, result);
 						})
-						.catch(setupTableError);
+						.catch(setupTableError(tableName, callback));
 
 				} else {
 					callback(null, exists);
 				}
 
 			})
-			.catch(setupTableError);
+			.catch(setupTableError(tableName, callback));
 	};
 };
 
-var setupTableError = function(error) {
-	console.log('Error creating ' + tableName + " table " + error);
-	callback(error, null);
+var setupTableError = function(tableName, callback) {
+	return function(error) {
+		console.log('Error creating ' + tableName + " table " + error);
+		callback(error, null);
+	};
 };
 
 var initDb = function() {

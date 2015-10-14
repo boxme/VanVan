@@ -16,7 +16,7 @@ var bookshelf = require('bookshelf')(knex);
 bookshelf.plugin('visibility');
 
 var user = bookshelf.Model.extend({
-	tableName: 'users'
+	tableName: 'user'
 });
 exports.user = user;
 

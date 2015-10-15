@@ -1,13 +1,11 @@
-"use strict";
+'use strict';
 
 var moment = require('moment');
 var async = require('async');
 var _ = require('lodash');
 var promise = require('bluebird');
-var model = require('./models/index.js');
-var schema = require('./data/schema.js');
 
-var createTable = function(tableName) {
+var createTable = function(tableName, model, schema) {
 	return model
 			.bookshelf
 			.knex
@@ -57,21 +55,20 @@ var createTable = function(tableName) {
 			});
 };
 
-var doesTableExist = function(tableName) {
+var doesTableExist = function(tableName, model) {
 	return model.bookshelf.knex.schema.hasTable(tableName);
 };
 
-var setupTable = function(tableName) {
-
+var setupTable = function(tableName, model, schema) {
 	return function Callback(callback) {
-		doesTableExist(tableName)
+		doesTableExist(tableName, model)
 			.then(function tableExists(exists) {
 
 				if (!exists) {
 					
 					console.log('Creating database table ' + tableName + '...');
 
-					createTable(tableName)
+					createTable(tableName, model, schema)
 						.then(function tableCreated(result) {
 							console.log("---> Created database table " + tableName);
 							callback(null, result);
@@ -94,12 +91,12 @@ var setupTableError = function(tableName, callback) {
 	};
 };
 
-var initDb = function() {
+var initDb = function(schema, model) {
 	var calls = [];
 	var tableNames = _.keys(schema);
 
 	tableNames.forEach(function createTable(tableName) {
-		calls.push(setupTable(tableName))
+		calls.push(setupTable(tableName, model, schema))
 	});
 
 	async.series(calls, function callback(err, result) {

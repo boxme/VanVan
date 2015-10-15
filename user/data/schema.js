@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-var schema = {
+var userSchema = {
 	user: {
 		id: {type: 'increments', nullable: false, primary: true},
 		name: {type: 'string', maxlength: 150, nullable: false},
@@ -29,4 +29,4 @@ var schema = {
 	}
 };
 
-module.exports = schema;
+exports.userSchema = userSchema;

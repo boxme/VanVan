@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var moment = require('moment');
 
@@ -8,7 +8,7 @@ var knex = require('knex')({
 		host: 'localhost',
 		user: '',
 		password: '',
-		database: 'GrabVan'
+		database: 'GrabVanUser'
 	}
 });
 

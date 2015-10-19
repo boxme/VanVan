@@ -19,3 +19,8 @@ var userDbModel = require('./models/index.js');
 db.initialisation(schema.userSchema, userDbModel);
 
 http.createServer(app).listen(3000);
+
+var userController = require('./route/user.js');
+var user = '/users';
+
+app.get(user, userController.getAll);

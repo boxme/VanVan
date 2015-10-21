@@ -12,11 +12,21 @@ var errorCallback = function errorCallback(res, statusCode) {
 	};
 };
 
+var removePasswordFromData = function removePasswordFromData(user) {
+	var userObject = user.toJSON();
+	if (user.hasOwnProperty('password')) {
+		delete(userObject.password);
+	}
+
+	return userObject;
+};
+
 userController.getAll = function getAll(req, res) {
 	collections.userCollection
 					.forge()
 					.fetch()
 					.then(function getResult(result) {
+						result = result.map(removePasswordFromData);
 						res.status(200).json(result);
 					})
 					.catch(errorCallback(res, 500));
@@ -29,7 +39,11 @@ userController.create = function create(req, res) {
 	collections.userCollection
 					.forge()
 					.create( {
-						// TODO:
+						// TODO: hash password
+						name: req.body.name,
+						email: req.body.email.toLowerCase(),
+						mobile: req.body.mobile,
+						password: hash
 					})
 					.then(function getResult(result) {
 						res.status(200).json(result);
@@ -48,7 +62,7 @@ userController.getUser = function getUser(req, res) {
 						if (!user) {
 							res.status(404).json({});
 						} else {
-							// TODO:
+							user = removePasswordFromData(user);
 							res.status(200).json(user);
 						}
 					})
@@ -64,22 +78,48 @@ userController.updateUser = function updateUser(req, res) {
 					.fetchOne({
 						require: true
 					})
-					.then(fucntion getResult(user) {
+					.then(function getResult(user) {
 						if (!user) {
 							res.status(404).json({});
 						} else {
 							user.save({
-								name: req.body.name || user.get('name')
-								email: req.body.email || user.get('email')
-							})
+									// TODO: hash password
+									name: req.body.name || user.get('name'),
+									email: req.body.email || user.get('email'),
+									mobile: req.body.mobile || user.get('mobile'),
+									password: req.body.password || user.get('password');
+								})
 								.then(function userUpdated(result) {
-									// TODO
+									result = removePasswordFromData(result);
 									res.status(200).json(result);
 								})
 								.catch(errorCallback(res, 500));
 						}
 					})
 					.catch(errorCallback(res, 500));
+};
+
+userController.destroyUser = function destroyUser(req, res) {
+	collections.userCollection
+					.forge()
+					.query(function getUserId(qb) {
+						qb.where('id', '=', req.params.id);
+					})
+					.fetchOne({
+						require: true
+					})
+					.then(function getResult(user) {
+						if (!user) {
+							res.status(404).json({});
+						} else {
+							user.destroy()
+								.then(function userDeleted() {
+									res.status(200).json({});
+								})
+								.catch(errorCallback(res, 500));
+						}
+					})
+					.catch()errorCallback(res, 500);
 };
 
 module.exports = userController;

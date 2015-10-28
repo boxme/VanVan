@@ -6,6 +6,7 @@ var users = model
 				.bookshelf
 				.Collection
 				.extend({
-					model : model.user;
+					model : model.user
 				});
-exports.userCollection = user;
+				
+exports.userCollection = users;

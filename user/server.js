@@ -23,4 +23,8 @@ http.createServer(app).listen(3000);
 var userController = require('./route/user.js');
 var user = '/users';
 
-app.get(user, userController.getAll);
+app.get('/users', userController.getAll);
+app.get('/users/:id', userController.getUser);
+app.post('users', userController.createUser);
+app.put('users/:id', userController.updateUser);
+app.delete('users/:id', userController.destroyUser);

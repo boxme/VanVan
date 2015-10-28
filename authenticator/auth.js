@@ -10,8 +10,8 @@ var tokenType = {
 	HEADER: 'HEADER_TOKEN'
 };
 
-authController.requireUser = function requireUser() {
-	return function checkForUser(req, res, next) {
+authController.requireToken = function requireToken() {
+	return function checkForToken(req, res, next) {
 		
 		var tokenMethod = tokenType.NONE;
 
@@ -29,7 +29,7 @@ authController.requireUser = function requireUser() {
 		console.log('Auth method: ' + tokenMethod + ' - ' + req.url);
 
 		if (token) {
-			// Check for validity of token and then next() if it's correct
+			// TODO: Check for validity of token and then next() if it's correct
 		} else {
 			res.status(400).json({error: "require_token"});
 		}

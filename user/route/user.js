@@ -32,7 +32,7 @@ userController.getAll = function getAll(req, res) {
 					.catch(errorCallback(res, 500));
 };
 
-userController.create = function create(req, res) {
+userController.createUser = function createUser(req, res) {
 	var salt = bcrypt.genSaltSync(12);
 	var hash = bcrypt.hashSync(req.body.password, salt);
 
@@ -87,7 +87,7 @@ userController.updateUser = function updateUser(req, res) {
 									name: req.body.name || user.get('name'),
 									email: req.body.email || user.get('email'),
 									mobile: req.body.mobile || user.get('mobile'),
-									password: req.body.password || user.get('password');
+									password: req.body.password || user.get('password')
 								})
 								.then(function userUpdated(result) {
 									result = removePasswordFromData(result);
@@ -119,7 +119,7 @@ userController.destroyUser = function destroyUser(req, res) {
 								.catch(errorCallback(res, 500));
 						}
 					})
-					.catch()errorCallback(res, 500);
+					.catch(errorCallback(res, 500));
 };
 
 module.exports = userController;

@@ -7,8 +7,8 @@ var http = require('http');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 
-var db = require('../database.js');
-var schema = require('./data/schema.js');
+var db = require('./database.js');
+var schema = require('./models/user/schema.js');
 
 // app.use(multer());
 app.use(bodyParser.json());
@@ -20,7 +20,7 @@ db.initialisation(schema.userSchema, userDbModel);
 
 http.createServer(app).listen(3000);
 
-var userController = require('./route/user.js');
+var userController = require('./routes/user/user.js');
 var user = '/users';
 
 app.get('/users', userController.getAll);

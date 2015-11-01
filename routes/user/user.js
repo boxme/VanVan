@@ -4,7 +4,7 @@ var root = '../';
 var userController = {};
 var bcrypt = require('bcrypt');
 var promise = require('bluebird');
-var collections = require(root + 'data/collection.js');
+var collections = require(root + root + 'models/user/collection.js');
 
 var errorCallback = function errorCallback(res, statusCode) {
 	return function catchError(err) {
@@ -48,7 +48,7 @@ userController.createUser = function createUser(req, res) {
 					.then(function getResult(result) {
 						res.status(200).json(result);
 					})
-					.catch(errorCallback(res, 500) );
+					.catch(errorCallback(res, 500));
 };
 
 userController.getUser = function getUser(req, res) {

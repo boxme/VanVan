@@ -19,12 +19,3 @@ var userDbModel = require('./models/index.js');
 db.initialisation(schema.userSchema, userDbModel);
 
 http.createServer(app).listen(3000);
-
-var userController = require('./routes/user/user.js');
-var user = '/users';
-
-app.get('/users', userController.getAll);
-app.get('/users/:id', userController.getUser);
-app.post('users', userController.createUser);
-app.put('users/:id', userController.updateUser);
-app.delete('users/:id', userController.destroyUser);

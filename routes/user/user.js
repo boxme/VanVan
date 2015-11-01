@@ -21,6 +21,45 @@ var removePasswordFromData = function removePasswordFromData(user) {
 	return userObject;
 };
 
+userController.login = function login(req, res) {
+	var userEmail = req.body.email;
+	var userPassword = req.body.password;
+
+	if (!userEmail && !userPassword) {
+		errorCallback(res, 400);
+	}
+
+	collections.userController
+					.forge()
+					.query(function query(qb) {
+						qb.where('email', '=', req.body.email.toLowerCase());
+					})
+					.fetchOne()
+					.then(function getUser(user) {
+						if (user) {
+							var isPassword = bcrypt.compareSync(userPassword);
+
+							if (isPassword) {
+								generateToken(user);
+							} else {
+								return promise.reject('password_incorrect');
+							}
+						} else {
+							return promise.reject('user_not_found');
+						}
+					})
+					.then(function getUserWithToken(user) {
+						// TODO: Remove password from user before returning
+						res.status(200).json(user);
+					})
+					.catch(errorCallback(res, 400));
+
+};
+
+var generateToken = function generateToken(user) {
+	// TODO
+}
+
 userController.getAll = function getAll(req, res) {
 	collections.userCollection
 					.forge()

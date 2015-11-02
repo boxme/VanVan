@@ -27,7 +27,7 @@ userController.login = function login(req, res) {
 	var userPassword = req.body.password;
 
 	if (!userEmail && !userPassword) {
-		errorCallback(res, 400);
+		res.status(400).json(error: "include your email and password");
 	}
 
 	collections.userController
@@ -53,7 +53,7 @@ userController.login = function login(req, res) {
 						// TODO: Remove password from user before returning
 						res.status(200).json(user);
 					})
-					.catch(errorCallback(res, 400));
+					.catch(errorCallback(res, 404));
 
 };
 
@@ -69,6 +69,24 @@ var generateToken = function generateToken(user) {
 							return user.save({token: newToken})
 						});
 	}
+};
+
+userController.logout = function logout(req, res) {
+	collections.userCollection
+					.forge()
+					.query(function query(qb) {
+						qb.where('token', '=', req.body.token);
+					})
+					.fetchOne()
+					.then(function getUser(user) {
+						if (user) {
+							user.save({token: null});
+							res.status(200).json({message: "logout"});
+						} else {
+							res.status(404).json(error: "user not found");
+						}
+					})
+					.catch(errorCallback(res, 500));
 };
 
 userController.getAll = function getAll(req, res) {

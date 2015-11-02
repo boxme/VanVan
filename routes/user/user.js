@@ -3,6 +3,7 @@
 var root = '../';
 var userController = {};
 var bcrypt = require('bcrypt');
+var crypto = require('crypto');
 var promise = require('bluebird');
 var collections = require(root + root + 'models/user/collection.js');
 
@@ -57,8 +58,18 @@ userController.login = function login(req, res) {
 };
 
 var generateToken = function generateToken(user) {
-	// TODO
-}
+	if (user.get('token')) {
+		return promise.resolve(user);
+	} else {
+		var randomBytes = promise.promisify(crypto.randomBytes);
+
+		return randomBytes(48)
+						.then(function buf(buf) {
+							var newToken = buf.toString('hex');
+							return user.save({token: newToken})
+						});
+	}
+};
 
 userController.getAll = function getAll(req, res) {
 	collections.userCollection

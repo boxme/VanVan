@@ -24,6 +24,7 @@ var userSchema = {
 		id: {type: 'increments', nullable: false, primary: true},
 		name: {type: 'string', maxlength: 150, nullable: false, unique: true},
 		email: {type: 'string', maxlength: 254, nullable: false, unique: true},
+		password: {type: 'string', nullable: false},
 		address: {type: 'string', maxlength: 254, nullable: false},
 		mobile: {type: 'string', nullable: false, unique: true}
 	}

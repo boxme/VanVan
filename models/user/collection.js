@@ -19,3 +19,12 @@ var drivers = model
 				});
 
 exports.driverCollection = drivers;
+
+var company = model
+				.bookshelf
+				.Collection
+				.extend({
+					model : mode.company
+				});
+
+exports.companyCollection = company;

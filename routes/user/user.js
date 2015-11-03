@@ -7,13 +7,13 @@ var crypto = require('crypto');
 var promise = require('bluebird');
 var collections = require(root + root + 'models/user/collection.js');
 
-var errorCallback = function errorCallback(res, statusCode) {
+var errorCallback = function (res, statusCode) {
 	return function catchError(err) {
 		res.status(statusCode).json(err);
 	};
 };
 
-var removePasswordFromData = function removePasswordFromData(user) {
+var removePasswordFromData = function (user) {
 	var userObject = user.toJSON();
 	if (user.hasOwnProperty('password')) {
 		delete(userObject.password);
@@ -22,13 +22,14 @@ var removePasswordFromData = function removePasswordFromData(user) {
 	return userObject;
 };
 
-userController.login = function login(req, res) {
+userController.login = function (req, res) {
 	var userEmail = req.body.email;
 	var userPassword = req.body.password;
 
 	if (!userEmail && !userPassword) {
 		res.status(400).json(error: "include your email and password");
 	}
+
 
 	collections.userController
 					.forge()
@@ -57,7 +58,7 @@ userController.login = function login(req, res) {
 
 };
 
-var generateToken = function generateToken(user) {
+var generateToken = function (user) {
 	if (user.get('token')) {
 		return promise.resolve(user);
 	} else {
@@ -71,7 +72,7 @@ var generateToken = function generateToken(user) {
 	}
 };
 
-userController.logout = function logout(req, res) {
+userController.logout = function (req, res) {
 	collections.userCollection
 					.forge()
 					.query(function query(qb) {
@@ -89,7 +90,7 @@ userController.logout = function logout(req, res) {
 					.catch(errorCallback(res, 500));
 };
 
-userController.getAll = function getAll(req, res) {
+userController.getAll = function (req, res) {
 	collections.userCollection
 					.forge()
 					.fetch()
@@ -100,7 +101,7 @@ userController.getAll = function getAll(req, res) {
 					.catch(errorCallback(res, 500));
 };
 
-userController.createUser = function createUser(req, res) {
+userController.createUser = function (req, res) {
 	var salt = bcrypt.genSaltSync(12);
 	var hash = bcrypt.hashSync(req.body.password, salt);
 
@@ -119,7 +120,7 @@ userController.createUser = function createUser(req, res) {
 					.catch(errorCallback(res, 500));
 };
 
-userController.getUser = function getUser(req, res) {
+userController.getUser = function (req, res) {
 	collections.userCollection
 					.forge()
 					.query(function getUserId(qb) {
@@ -137,7 +138,7 @@ userController.getUser = function getUser(req, res) {
 					.catch(errorCallback(res, 500));
 };
 
-userController.updateUser = function updateUser(req, res) {
+userController.updateUser = function (req, res) {
 	collections.userCollection
 					.forge()
 					.query(function getUserId(qb) {
@@ -167,7 +168,7 @@ userController.updateUser = function updateUser(req, res) {
 					.catch(errorCallback(res, 500));
 };
 
-userController.destroyUser = function destroyUser(req, res) {
+userController.destroyUser = function (req, res) {
 	collections.userCollection
 					.forge()
 					.query(function getUserId(qb) {

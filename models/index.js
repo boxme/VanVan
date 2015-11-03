@@ -18,7 +18,6 @@ bookshelf.plugin('visibility');
 var user = bookshelf.Model.extend({
 	tableName: 'user'
 });
-
 exports.user = user;
 
 var driver = bookshelf.Model.extend({
@@ -28,7 +27,6 @@ var driver = bookshelf.Model.extend({
 		return this.belongsTo(company, 'company_id');
 	}
 });
-
 exports.driver = driver;
 
 var company = bookshelf.Model.extend({
@@ -38,5 +36,6 @@ var company = bookshelf.Model.extend({
 		this.hasMany(driver, "driver_id");
 	}
 });
+exports.company = company;
 
 exports.bookshelf = bookshelf;

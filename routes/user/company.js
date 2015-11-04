@@ -35,6 +35,7 @@ companyController.create = function (req, res) {
 							mobile : req.body.company_mobile 
 						})
 						.then(function created(company) {
+							// TODO: login company after creating
 							res.status(200).json(company);
 						})
 						.catch(errorCallback(res, 500));
@@ -115,17 +116,11 @@ var generateToken = function (company) {
 	}
 };
 
-var companyController.logout = function (req, res) {
-	var token = req.body.token;
-
-	if (!token) {
-		res.status(400).json({error: "Require token"});
-	}
-
+companyController.logout = function (req, res) {
 	collection.companyCollection
 						.forge()
 						.query(function query(qb) {
-							qb.where('token', '=', token);
+							qb.where('token', '=', req.body.token);
 						})
 						.fetchOne()
 						.then(function getCompany(company) {
@@ -134,6 +129,22 @@ var companyController.logout = function (req, res) {
 						})
 						.catch(errorCallback(res, 404));
 };
+
+companyController.destroyCompany = function (req, res) {
+	collection.companyController
+						.forge()
+						.query(function query(qb) {
+							qb.where('id', '=', req.params.id);
+						})
+						.fetchOne()
+						.then(function getCompany(company) {
+							return company.destroy();
+						})
+						.then(function companyDeleted() {
+							res.status(200).json({message: "company deleted"});
+						})
+						.catch(errorCallback(res, 404));
+}
 
 module.exports = companyController;
 

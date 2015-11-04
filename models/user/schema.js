@@ -26,7 +26,8 @@ var userSchema = {
 		email: {type: 'string', maxlength: 254, nullable: false, unique: true},
 		password: {type: 'string', nullable: false},
 		address: {type: 'string', maxlength: 254, nullable: false},
-		mobile: {type: 'string', nullable: false, unique: true}
+		mobile: {type: 'string', nullable: false, unique: true},
+		token: {type, 'string', nullable: true}
 	}
 };
 

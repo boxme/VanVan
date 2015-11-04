@@ -51,7 +51,7 @@ companyController.getAll = function (req, res) {
 };
 
 companyController.getCompany = function (req, res) {
-	collection.comapnyCollection
+	collection.companyCollection
 						.forge()
 						.query(function query(qb) {
 							qb.where('id', '=', req.params.id);
@@ -62,10 +62,91 @@ companyController.getCompany = function (req, res) {
 								company = removePasswordFromData(company);
 								res.code(200).json(company);
 							} else {
-								res.code(404).json({});
+								res.code(404).json({error: "company is not found"});
 							}
 						})
 						.catch(errorCallback(res, 500));
 };
 
+companyController.login = function (req, res) {
+	var companyEmail = req.body.email;
+	var companyPassword = req.body.password;
+
+	if (!companyEmail || !companyPassword) {
+		ress.status(400).json({error: "Include your email and password"});
+	}
+
+	collection.companyCollection
+						.forge(function query(qb) {
+							qb.where('email', '=', companyEmail);
+						})
+						.query()
+						.fetchOne()
+						.then(function result(company) {
+							if (company) {
+								var isPassword = bcrypt.compareSync(companyPassword, company.get('password'));
+
+								if (isPassword) {
+									generateToken(company);
+								} else {
+									return promise.reject('password_incorrect');
+								}
+							} else {
+								return promise.reject('company_not_found');
+							}
+						})
+						.then(function getCompany(company) {
+							res.status(200).json(company);
+						})
+						.catch(errorCallback(res, 404));
+};
+
+var generateToken = function (company) {
+	if (company.get('token')) {
+		return promise.resolve(company);
+	} else {
+		var randomBytes = promise.promisify(crypto.randomBytes);
+
+		return randomBytes(48)
+						.then(function buf(buf) {
+							var newToken = buf.toString('hex');
+							return company.save({token: newToken});
+						});
+	}
+};
+
+var companyController.logout = function (req, res) {
+	var token = req.body.token;
+
+	if (!token) {
+		res.status(400).json({error: "Require token"});
+	}
+
+	collection.companyCollection
+						.forge()
+						.query(function query(qb) {
+							qb.where('token', '=', token);
+						})
+						.fetchOne()
+						.then(function getCompany(company) {
+							company.save({token: null});
+							req.status(200).json({message: "logout"});
+						})
+						.catch(errorCallback(res, 404));
+};
+
 module.exports = companyController;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -27,9 +27,8 @@ userController.login = function (req, res) {
 	var userPassword = req.body.password;
 
 	if (!userEmail && !userPassword) {
-		res.status(400).json(error: "include your email and password");
+		res.status(400).json({error: "include your email and password"});
 	}
-
 
 	collections.userController
 					.forge()
@@ -39,7 +38,7 @@ userController.login = function (req, res) {
 					.fetchOne()
 					.then(function getUser(user) {
 						if (user) {
-							var isPassword = bcrypt.compareSync(userPassword);
+							var isPassword = bcrypt.compareSync(userPassword, user.get('password'));
 
 							if (isPassword) {
 								generateToken(user);
@@ -67,12 +66,18 @@ var generateToken = function (user) {
 		return randomBytes(48)
 						.then(function buf(buf) {
 							var newToken = buf.toString('hex');
-							return user.save({token: newToken})
+							return user.save({token: newToken});
 						});
 	}
 };
 
 userController.logout = function (req, res) {
+	var token = req.body.token;
+
+	if (!token) {
+		res.status(400).json({error: "Require user token"});
+	}
+
 	collections.userCollection
 					.forge()
 					.query(function query(qb) {
@@ -108,7 +113,6 @@ userController.createUser = function (req, res) {
 	collections.userCollection
 					.forge()
 					.create( {
-						// TODO: hash password
 						name: req.body.name,
 						email: req.body.email.toLowerCase(),
 						mobile: req.body.mobile,
@@ -116,6 +120,7 @@ userController.createUser = function (req, res) {
 					})
 					.then(function getResult(result) {
 						res.status(200).json(result);
+						// TODO: login user automatically
 					})
 					.catch(errorCallback(res, 500));
 };

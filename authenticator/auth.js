@@ -57,7 +57,7 @@ authController.requireToken = function requireToken() {
 };
 
 var errorHandling = function errorHandling(res, statusCode, message) {
-	res.status(statusCode).json(error: message);
+	res.status(statusCode).json({error: message});
 };
 
 module.exports = authController;

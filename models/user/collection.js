@@ -24,7 +24,7 @@ var company = model
 				.bookshelf
 				.Collection
 				.extend({
-					model : mode.company
+					model : model.company
 				});
 
 exports.companyCollection = company;

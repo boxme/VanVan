@@ -89,7 +89,7 @@ userController.logout = function (req, res) {
 							user.save({token: null});
 							res.status(200).json({message: "logout"});
 						} else {
-							res.status(404).json(error: "user not found");
+							res.status(404).json({error: "user not found"});
 						}
 					})
 					.catch(errorCallback(res, 500));

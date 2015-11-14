@@ -15,10 +15,9 @@ var errorCallback = function (res, statusCode) {
 
 var removePasswordFromData = function (user) {
 	var userObject = user.toJSON();
-	if (user.hasOwnProperty('password')) {
+	if (userObject.hasOwnProperty('password')) {
 		delete(userObject.password);
 	}
-
 	return userObject;
 };
 
@@ -26,11 +25,12 @@ userController.login = function (req, res) {
 	var userEmail = req.body.email;
 	var userPassword = req.body.password;
 
-	if (!userEmail && !userPassword) {
+	if (!userPassword || !userEmail) {
 		res.status(400).json({error: "include your email and password"});
+		return;
 	}
 
-	collections.userController
+	collections.userCollection
 					.forge()
 					.query(function query(qb) {
 						qb.where('email', '=', req.body.email.toLowerCase());
@@ -41,13 +41,11 @@ userController.login = function (req, res) {
 							var isPassword = bcrypt.compareSync(userPassword, user.get('password'));
 
 							if (isPassword) {
-								generateToken(user);
-							} else {
-								return promise.reject('password_incorrect');
-							}
-						} else {
-							return promise.reject('user_not_found');
+								return generateToken(user);
+							} 
+							return promise.reject('password_incorrect');
 						}
+						return promise.reject('user_not_found');
 					})
 					.then(function getUserWithToken(user) {
 						// TODO: Remove password from user before returning
@@ -59,16 +57,15 @@ userController.login = function (req, res) {
 
 var generateToken = function (user) {
 	if (user.get('token')) {
+		console.log('user has token');
 		return promise.resolve(user);
-	} else {
-		var randomBytes = promise.promisify(crypto.randomBytes);
-
-		return randomBytes(48)
-						.then(function buf(buf) {
-							var newToken = buf.toString('hex');
-							return user.save({token: newToken});
-						});
 	}
+	var randomBytes = promise.promisify(crypto.randomBytes);
+	return randomBytes(48)
+					.then(function buf(buf) {
+						var newToken = buf.toString('hex');
+						return user.save({token: newToken});
+					});
 };
 
 userController.logout = function (req, res) {
@@ -76,6 +73,7 @@ userController.logout = function (req, res) {
 
 	if (!token) {
 		res.status(400).json({error: "Require user token"});
+		return;
 	}
 
 	collections.userCollection
@@ -88,9 +86,9 @@ userController.logout = function (req, res) {
 						if (user) {
 							user.save({token: null});
 							res.status(200).json({message: "logout"});
-						} else {
-							res.status(404).json({error: "user not found"});
+							return;
 						}
+						res.status(404).json({error: "user not found"});
 					})
 					.catch(errorCallback(res, 500));
 };
@@ -133,17 +131,23 @@ userController.getUser = function (req, res) {
 					})
 					.fetchOne()
 					.then(function getResult(user) {
-						if (!user) {
-							res.status(404).json({});
-						} else {
+						if (user) {
 							user = removePasswordFromData(user);
 							res.status(200).json(user);
+							return;
 						}
+						res.status(404).json({});
 					})
 					.catch(errorCallback(res, 500));
 };
 
 userController.updateUser = function (req, res) {
+	var userPassword = req.body.password;
+	if (userPassword) {
+		var salt = bcrypt.genSaltSync(12);
+		userPassword = bcrypt.hashSync(req.body.password, salt);
+	}
+
 	collections.userCollection
 					.forge()
 					.query(function getUserId(qb) {
@@ -153,22 +157,21 @@ userController.updateUser = function (req, res) {
 						require: true
 					})
 					.then(function getResult(user) {
-						if (!user) {
-							res.status(404).json({});
-						} else {
+						if (user) {
 							user.save({
-									// TODO: hash password
 									name: req.body.name || user.get('name'),
 									email: req.body.email || user.get('email'),
 									mobile: req.body.mobile || user.get('mobile'),
-									password: req.body.password || user.get('password')
+									password: userPassword || user.get('password')
 								})
 								.then(function userUpdated(result) {
 									result = removePasswordFromData(result);
 									res.status(200).json(result);
 								})
 								.catch(errorCallback(res, 500));
+							return;
 						}
+						res.status(404).json({});
 					})
 					.catch(errorCallback(res, 500));
 };
@@ -183,14 +186,16 @@ userController.destroyUser = function (req, res) {
 						require: true
 					})
 					.then(function getResult(user) {
-						if (!user) {
-							res.status(404).json({});
-						} else {
+						if (user) {
 							user.destroy()
 								.then(function userDeleted() {
 									res.status(200).json({});
 								})
 								.catch(errorCallback(res, 500));
+						}
+						res.status(404).json({});
+						if (!user) {
+							
 						}
 					})
 					.catch(errorCallback(res, 500));

@@ -31,8 +31,7 @@ authController.requireToken = function requireToken() {
 		console.log('Auth method: ' + tokenMethod + ' - ' + req.url);
 
 		if (token) {
-
-			collections.UserCollection
+			collections.userCollection
 						.forge()
 						.query(function query(qb) {
 							qb.where('token', '=', token);

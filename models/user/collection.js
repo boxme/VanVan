@@ -10,21 +10,3 @@ var users = model
 				});
 				
 exports.userCollection = users;
-
-var drivers = model
-				.bookshelf
-				.Collection
-				.extend({
-					model : model.driver
-				});
-
-exports.driverCollection = drivers;
-
-var company = model
-				.bookshelf
-				.Collection
-				.extend({
-					model : model.company
-				});
-
-exports.companyCollection = company;

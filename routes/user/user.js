@@ -117,8 +117,9 @@ userController.createUser = function (req, res) {
 						password: hash
 					})
 					.then(function getResult(result) {
-						res.status(200).json(result);
-						// TODO: login user automatically
+						if (result) {
+							userController.login(req, res);
+						}
 					})
 					.catch(errorCallback(res, 500));
 };

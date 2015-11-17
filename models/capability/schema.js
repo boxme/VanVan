@@ -23,7 +23,7 @@ var driverSchema = {
 
 	availability: {
 		id: {type: 'increments', nullable: false, primary: true},
-		driver_id: {type: 'integer', nullable: false, unique: true},
+		driver_id: {type: 'integer', nullable: false, unique: false},
 		area: {type: 'string', nullable: false},
 		time: {type: 'string', nullable: false}
 	}

@@ -2,11 +2,11 @@
 
 var model = require('../index.js');
 
-var users = model
+var user = model
 				.bookshelf
 				.Collection
 				.extend({
-					model : model.user
+					model: model.user
 				});
 				
-exports.userCollection = users;
+exports.userCollection = user;

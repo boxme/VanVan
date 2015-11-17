@@ -21,21 +21,26 @@ var user = bookshelf.Model.extend({
 exports.user = user;
 
 var driver = bookshelf.Model.extend({
-	tableName: 'driver',
-	company: function() {
-		// one-to-one or many-to-one
-		return this.belongsTo(company, 'company_id');
-	}
+	tableName: 'driver'
 });
 exports.driver = driver;
 
-var company = bookshelf.Model.extend({
-	tableName: 'company',
-	driver: function() {
-		// one-to-many
-		this.hasMany(driver, "driver_id");
+var vehicle = bookshelf.Model.extend({
+	tableName: 'vehicle',
+	owner: function () {
+		// one-to-one
+		return this.belongsTo(driver, 'driver_id');
 	}
 });
-exports.company = company;
+exports.vehicle = vehicle;
+
+var availability = bookshelf.Model.extend({
+	tableName: 'availability',
+	driver: function () {
+		// one-to-many
+		return this.belongsTo(driver, 'driver_id');
+	}
+});
+exports.availability = availability;
 
 exports.bookshelf = bookshelf;

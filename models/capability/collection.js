@@ -16,7 +16,7 @@ var vehicle = model.bookshelf
 				  		model: model.vehicle
 				  	});
 
-exports.vehicleCollection = vehicle;
+exports.vehCollection = vehicle;
 
 var availability = model.bookshelf
 						.Collection

@@ -6,12 +6,7 @@ var bcrypt = require('bcrypt');
 var crypto = require('crypto');
 var promise = require('bluebird');
 var collections = require(root + root + 'models/user/collection.js');
-
-var errorCallback = function (res, statusCode) {
-	return function catchError(err) {
-		res.status(statusCode).json(err);
-	};
-};
+var errorHelper = require(root + root + 'helper/errorHandler.js').errorCallback;
 
 var removePasswordFromData = function (user) {
 	var userObject = user.toJSON();
@@ -51,7 +46,7 @@ userController.login = function (req, res) {
 						// TODO: Remove password from user before returning
 						res.status(200).json(user);
 					})
-					.catch(errorCallback(res, 404));
+					.catch(errorHelper(res, 404));
 
 };
 
@@ -90,7 +85,7 @@ userController.logout = function (req, res) {
 						}
 						res.status(404).json({error: "user not found"});
 					})
-					.catch(errorCallback(res, 500));
+					.catch(errorHelper(res, 500));
 };
 
 userController.getAll = function (req, res) {
@@ -101,7 +96,7 @@ userController.getAll = function (req, res) {
 						result = result.map(removePasswordFromData);
 						res.status(200).json(result);
 					})
-					.catch(errorCallback(res, 500));
+					.catch(errorHelper(res, 500));
 };
 
 userController.createUser = function (req, res) {
@@ -121,7 +116,7 @@ userController.createUser = function (req, res) {
 							userController.login(req, res);
 						}
 					})
-					.catch(errorCallback(res, 500));
+					.catch(errorHelper(res, 500));
 };
 
 userController.getUser = function (req, res) {
@@ -139,7 +134,7 @@ userController.getUser = function (req, res) {
 						}
 						res.status(404).json({});
 					})
-					.catch(errorCallback(res, 500));
+					.catch(errorHelper(res, 500));
 };
 
 userController.updateUser = function (req, res) {
@@ -169,12 +164,12 @@ userController.updateUser = function (req, res) {
 									result = removePasswordFromData(result);
 									res.status(200).json(result);
 								})
-								.catch(errorCallback(res, 500));
+								.catch(errorHelper(res, 500));
 							return;
 						}
 						res.status(404).json({});
 					})
-					.catch(errorCallback(res, 500));
+					.catch(errorHelper(res, 500));
 };
 
 userController.destroyUser = function (req, res) {
@@ -192,14 +187,14 @@ userController.destroyUser = function (req, res) {
 								.then(function userDeleted() {
 									res.status(200).json({});
 								})
-								.catch(errorCallback(res, 500));
+								.catch(errorHelper(res, 500));
 						}
 						res.status(404).json({});
 						if (!user) {
 							
 						}
 					})
-					.catch(errorCallback(res, 500));
+					.catch(errorHelper(res, 500));
 };
 
 module.exports = userController;

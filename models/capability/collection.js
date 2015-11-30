@@ -1,8 +1,8 @@
 'use strict';
 
-var model = require('../index.js');
+const model = require('../index.js');
 
-var driver = model.bookshelf
+const driver = model.bookshelf
 				   .Collection
 				   .extend({
 				   		model: model.driver
@@ -10,7 +10,7 @@ var driver = model.bookshelf
 
 exports.driverCollection = driver;
 
-var vehicle = model.bookshelf
+const vehicle = model.bookshelf
 				  	.Collection
 				  	.extend({
 				  		model: model.vehicle
@@ -18,7 +18,7 @@ var vehicle = model.bookshelf
 
 exports.vehCollection = vehicle;
 
-var availability = model.bookshelf
+const availability = model.bookshelf
 						.Collection
 						.extend({
 							model: model.availability

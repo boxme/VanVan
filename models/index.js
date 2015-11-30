@@ -1,8 +1,8 @@
 'use strict';
 
-var moment = require('moment');
+const moment = require('moment');
 
-var knex = require('knex')({
+const knex = require('knex')({
 	client: 'pg',
 	connection: {
 		host: 'localhost',
@@ -12,20 +12,20 @@ var knex = require('knex')({
 	}
 });
 
-var bookshelf = require('bookshelf')(knex);
+const bookshelf = require('bookshelf')(knex);
 bookshelf.plugin('visibility');
 
-var user = bookshelf.Model.extend({
+const user = bookshelf.Model.extend({
 	tableName: 'user'
 });
 exports.user = user;
 
-var driver = bookshelf.Model.extend({
+const driver = bookshelf.Model.extend({
 	tableName: 'driver'
 });
 exports.driver = driver;
 
-var vehicle = bookshelf.Model.extend({
+const vehicle = bookshelf.Model.extend({
 	tableName: 'vehicle',
 	owner: function () {
 		// one-to-one
@@ -34,7 +34,7 @@ var vehicle = bookshelf.Model.extend({
 });
 exports.vehicle = vehicle;
 
-var availability = bookshelf.Model.extend({
+const availability = bookshelf.Model.extend({
 	tableName: 'availability',
 	driver: function () {
 		// one-to-many

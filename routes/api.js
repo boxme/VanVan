@@ -1,9 +1,9 @@
 'use strict';
 
-var authController = require('../authenticator/auth.js');
-var userController = require('./user/user.js');
+const authController = require('../authenticator/auth.js');
+const userController = require('./user/user.js');
 
-var processApi = function processApi(app) {
+const processApi = function processApi(app) {
 	// User
 	app.get('/users', authController.requireToken(), userController.getAll);
 	app.get('/users/:id', authController.requireToken(), userController.getUser);
